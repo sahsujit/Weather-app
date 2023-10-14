@@ -18,7 +18,7 @@ body{
     --colorLight2: #F9F7F7;
 }
 .wrapper{
-    overflow: hidden;
+    overflow-x: hidden;
     width: 100vw;
     height: 100vh;
     color: var(--colorLight2);
