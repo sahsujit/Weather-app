@@ -123,35 +123,41 @@ const searchInput = document.querySelector("[data-searchInput]");
 
 searchForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    let cityName = searchInput.value;
-    if (cityName === "")
-    return;
-   
-   
-    else
-        fetchSearchWeatherInfo(cityName);
-       
+    let cityName = searchInput.value.trim(); // Trim input to remove leading/trailing whitespace
 
+    if (cityName === "") {
+        return; // Exit early if the input is empty
+    }
 
-})
-async function fetchSearchWeatherInfo(city){
+    fetchSearchWeatherInfo(cityName);
+});
+
+async function fetchSearchWeatherInfo(city) {
     loadingScreen.classList.add("active");
     grantAccessContainer.classList.remove("active");
     userInfoContainer.classList.remove("active");
+    notFound.classList.remove("active"); // Hide the "not found" message
 
-    try{
-        const response=await fetch( `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`);
-        const data=await response.json();
-        loadingScreen.classList.remove("active");
-        userInfoContainer.classList.add("active");
-        renderWeatherInfo(data);
+    try {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`);
+        const data = await response.json();
+
+        if (data.cod === 200) {
+            // Successful response
+            loadingScreen.classList.remove("active");
+            userInfoContainer.classList.add("active");
+            // notFound.classList.remove("active")
+            renderWeatherInfo(data);
+        } else {
+            // City not found
+            notFound.classList.add("active");
+            loadingScreen.classList.remove("active")
+        }
+    } catch (err) {
+        console.error(err); // Log the error for debugging
+        // Handle the error, e.g., show an error message to the user
     }
-    catch(err){
-       console.log("error");
-        
-    }
-        
-        
 }
+
 
 
